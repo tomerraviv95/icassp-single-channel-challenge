@@ -6,7 +6,7 @@ from data_generation.interference import load_interference
 from data_generation.signal import get_soi_generation_fn
 
 FRAMES_NUM = 100
-all_sinr = np.arange(-30, 0.1, 3)
+SINR_values = np.arange(-30, 0.1, 3)
 get_db = lambda p: 10 * np.log10(p)
 get_pow = lambda s: np.mean(np.abs(s) ** 2, axis=-1)
 get_sinr = lambda s, i: get_pow(s) / get_pow(i)
@@ -19,7 +19,7 @@ def generate_datasets(soi_type, interference_sig_type, interference_ind):
     sig_data, sig_type_info = load_interference(interference_sig_type)
 
     y_data, x_gt, bits_gt, meta_data = [], [], [], []
-    for idx, sinr in enumerate(all_sinr):
+    for idx, sinr in enumerate(SINR_values):
         sig1, _, bits1, _ = generate_soi(FRAMES_NUM, SIGNAL_LENGTH)
         sig2 = sig_data[np.random.choice(interference_ind, size=(FRAMES_NUM)), :]
 
