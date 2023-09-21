@@ -29,7 +29,7 @@ if __name__ == "__main__":
                                                                              interference_ind=test_indices)
     print(f"GT shape:{train_x_gt.shape}")
     print(f"Noisy Data shape:{train_y_data.shape}")
-    net = NETWORKS_TYPES_TO_METHODS[model_type]
+    net = NETWORKS_TYPES_TO_METHODS[model_type]()
     train_network(net, train_x_gt[train_indices], train_y_data[train_indices])
     mse = eval_mse(test_x_gt[test_indices], test_y_data[test_indices])
     pred_x_gt = net(torch.Tensor(test_y_data[test_indices]).to(DEVICE)).detach().numpy()
