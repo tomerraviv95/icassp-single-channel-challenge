@@ -21,7 +21,7 @@ np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
 if __name__ == "__main__":
-    model_type = NetworkType.DNN
+    model_type = NetworkType.Transformer
     train_indices, test_indices = train_test_split(np.array(range(TOTAL_INTERFERENCE_FRAMES)), test_size=TEST_RATIO)
     train_x_gt, train_y_data, train_bits_gt, train_meta_data = generate_datasets(SOI_TYPE, INTERFERENCE_TYPE,
                                                                                  interference_ind=train_indices)
@@ -29,7 +29,7 @@ if __name__ == "__main__":
                                                                              interference_ind=test_indices)
     print(f"GT shape:{train_x_gt.shape}")
     print(f"Noisy Data shape:{train_y_data.shape}")
-    net = NETWORKS_TYPES_TO_METHODS[model_type]()
+    net = NETWORKS_TYPES_TO_METHODS[model_type]
     train_network(net, train_x_gt, train_y_data)
     pred_x_gt = net(torch.Tensor(test_y_data).to(DEVICE)).detach().numpy()
     for SINR_value in SINR_values:
