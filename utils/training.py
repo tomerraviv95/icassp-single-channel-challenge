@@ -7,9 +7,9 @@ from torch.optim import Adam
 
 from globals import DEVICE
 
-lr = 1e-3
+lr = 1e-2
 EPOCHS = 150
-BATCH_SIZE = 32
+BATCH_SIZE = 8
 
 
 def run_train_loop(est: torch.Tensor, tx: torch.Tensor, loss_function, optimizer) -> float:
