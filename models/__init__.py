@@ -13,8 +13,8 @@ class NetworkType(Enum):
 
 
 NETWORKS_TYPES_TO_METHODS = {NetworkType.DNN: DNNDetector(),
-                             NetworkType.WAVE: Wave(ModelConfig),
-                             NetworkType.Transformer: TransformerModel()}
+                             NetworkType.Transformer: TransformerModel(),
+                             NetworkType.WAVE: Wave(ModelConfig)}
 
 def initialize_networks(model_type):
     nets = [NETWORKS_TYPES_TO_METHODS[model_type] for _ in range(len(SINR_values))]

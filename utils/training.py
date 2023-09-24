@@ -10,7 +10,7 @@ from globals import DEVICE
 
 lr = 1e-3
 EPOCHS = 100
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 
 
 def run_train_loop(est: torch.Tensor, tx: torch.Tensor, loss_function, optimizer) -> float:
