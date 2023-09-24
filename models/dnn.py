@@ -14,13 +14,20 @@ class DNNDetector(nn.Module):
 
     def __init__(self):
         super(DNNDetector, self).__init__()
-        layers = [nn.Linear(SIGNAL_LENGTH, HIDDEN_SIZE),
+        layers = [nn.Linear(SIGNAL_LENGTH//HIDDEN_SIZE, HIDDEN_SIZE),
                   nn.ReLU(),
                   nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE),
                   nn.ReLU(),
-                  nn.Linear(HIDDEN_SIZE, SIGNAL_LENGTH)]
+                  nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE),
+                  nn.ReLU(),
+                  nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE),
+                  nn.ReLU(),
+                  nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE),
+                  nn.ReLU(),
+                  nn.Linear(HIDDEN_SIZE, SIGNAL_LENGTH//HIDDEN_SIZE)]
         self.net = nn.Sequential(*layers).to(DEVICE)
 
     def forward(self, rx: torch.Tensor) -> torch.Tensor:
-        soft_estimation = self.net(rx)
-        return soft_estimation
+        reshaped_rx = rx.reshape(-1,SIGNAL_LENGTH//HIDDEN_SIZE)
+        soft_estimation = self.net(reshaped_rx)
+        return soft_estimation.reshape(rx.shape[0],-1)

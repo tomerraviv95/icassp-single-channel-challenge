@@ -1,5 +1,6 @@
 from enum import Enum
 
+from data_generation.dataset import SINR_values
 from models.dnn import DNNDetector
 from models.transformer import TransformerModel
 from models.wavenet import Wave, ModelConfig
@@ -14,3 +15,7 @@ class NetworkType(Enum):
 NETWORKS_TYPES_TO_METHODS = {NetworkType.DNN: DNNDetector(),
                              NetworkType.WAVE: Wave(ModelConfig),
                              NetworkType.Transformer: TransformerModel()}
+
+def initialize_networks(model_type):
+    nets = [NETWORKS_TYPES_TO_METHODS[model_type] for _ in range(len(SINR_values))]
+    return nets
