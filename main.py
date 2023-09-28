@@ -21,7 +21,7 @@ np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
 if __name__ == "__main__":
-    model_type = NetworkType.DNN
+    model_type = NetworkType.WAVE
     train_indices, test_indices = train_test_split(np.array(range(TOTAL_INTERFERENCE_FRAMES)), test_size=TEST_RATIO)
     train_x_gt, train_y_data, train_bits_gt, train_meta_data = generate_datasets(SOI_TYPE, INTERFERENCE_TYPE,
                                                                                  interference_ind=train_indices)
@@ -30,10 +30,14 @@ if __name__ == "__main__":
     print(f"GT shape:{train_x_gt.shape}")
     print(f"Noisy Data shape:{train_y_data.shape}")
     nets = initialize_networks(model_type)
-    train_x_gt,test_x_gt = torch.tensor(train_x_gt,dtype=torch.cfloat).to(DEVICE),torch.tensor(test_x_gt,dtype=torch.cfloat).to(DEVICE)
-    train_y_data,test_y_data = torch.tensor(train_y_data,dtype=torch.cfloat).to(DEVICE),torch.tensor(test_y_data,dtype=torch.cfloat).to(DEVICE)
+    train_x_gt, test_x_gt = torch.tensor(train_x_gt, dtype=torch.cfloat).to(DEVICE), torch.tensor(test_x_gt,
+                                                                                                  dtype=torch.cfloat).to(
+        DEVICE)
+    train_y_data, test_y_data = torch.tensor(train_y_data, dtype=torch.cfloat).to(DEVICE), torch.tensor(test_y_data,
+                                                                                                        dtype=torch.cfloat).to(
+        DEVICE)
     train_networks(nets, train_x_gt, train_y_data, train_meta_data)
-    for sinr,net in zip(SINR_values[-1:],nets[-1:]):
+    for sinr, net in zip(SINR_values[-1:], nets[-1:]):
         print(sinr)
         cur_sinr_indices = test_meta_data[:, 1].astype(float) == sinr
         cur_test_x_gt = test_x_gt[cur_sinr_indices]
@@ -42,4 +46,4 @@ if __name__ == "__main__":
         pred_x_gt = torch.view_as_complex(net(cur_real_test_y_data).reshape(cur_real_test_y_data.shape))
         mse = eval_mse(cur_test_x_gt.detach().numpy(), cur_test_y_data.detach().numpy())
         mse_after_training = eval_mse(cur_test_x_gt.detach().numpy(), pred_x_gt.detach().numpy())
-        print(f'Initial MSE: {mse.mean()} -> After training: {mse_after_training.mean()}')
+        print(f'Initial MSE: {mse.mean()}[dB] -> After training: {mse_after_training.mean()}[dB]')

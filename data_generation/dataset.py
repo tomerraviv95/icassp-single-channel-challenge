@@ -15,7 +15,6 @@ get_sinr_db = lambda s, i: get_db(get_sinr(s, i))
 
 def generate_datasets(soi_type, interference_sig_type, interference_ind):
     generate_soi, demod_soi = get_soi_generation_fn(soi_type)
-    sig1, _, true_bits1, _ = generate_soi(FRAMES_NUM, SIGNAL_LENGTH)
     sig_data, sig_type_info = load_interference(interference_sig_type)
 
     y_data, x_gt, bits_gt, meta_data = [], [], [], []

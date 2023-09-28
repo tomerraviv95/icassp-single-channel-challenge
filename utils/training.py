@@ -9,8 +9,8 @@ from data_generation.dataset import SINR_values
 from globals import DEVICE
 
 lr = 1e-3
-EPOCHS = 100
-BATCH_SIZE = 16
+EPOCHS = 150
+BATCH_SIZE = 8
 
 
 def run_train_loop(est: torch.Tensor, tx: torch.Tensor, loss_function, optimizer) -> float:
@@ -26,16 +26,16 @@ def run_train_loop(est: torch.Tensor, tx: torch.Tensor, loss_function, optimizer
 
 def train_networks(nets, x_gt, y_data, train_meta_data):
     loss_function = MSELoss().to(DEVICE)
-    for sinr, net in zip(SINR_values[-1:],nets[-1:]):
+    for sinr, net in zip(SINR_values[-1:], nets[-1:]):
         print(f"Training for SINR {sinr}")
         optimizer = Adam(filter(lambda p: p.requires_grad, net.parameters()), lr=lr)
         current_ind = train_meta_data[:, 1].astype(float) == sinr
         real_x_gt, real_y_data = torch.view_as_real(x_gt[current_ind]), torch.view_as_real(y_data[current_ind])
-        train_single_network(loss_function, net, optimizer,real_x_gt,real_y_data)
+        train_single_network(loss_function, net, optimizer, real_x_gt, real_y_data)
 
 
 def train_single_network(loss_function, net, optimizer, x_gt, y_data):
-    # run training loops
+    # run in_training loops
     loss = 0
     current_loss = math.inf
     for i in range(EPOCHS):

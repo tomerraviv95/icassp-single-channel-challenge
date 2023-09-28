@@ -1,17 +1,17 @@
 from dataclasses import dataclass
+from math import sqrt
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from math import sqrt
 
 @dataclass
 class ModelConfig:
     input_channels: int = 2
-    residual_layers: int = 30
-    residual_channels: int = 128
-    dilation_cycle_length: int = 10
+    residual_layers: int = 12
+    residual_channels: int = 64
+    dilation_cycle_length: int = 6
 
 
 Linear = nn.Linear
@@ -62,8 +62,8 @@ class Wave(nn.Module):
             cfg.input_channels, cfg.residual_channels, 1)
 
         self.residual_layers = nn.ModuleList([
-            ResidualBlock(cfg.residual_channels, 2**(i %
-                          cfg.dilation_cycle_length))
+            ResidualBlock(cfg.residual_channels, 2 ** (i %
+                                                       cfg.dilation_cycle_length))
             for i in range(cfg.residual_layers)
         ])
         self.skip_projection = Conv1d(
@@ -73,8 +73,7 @@ class Wave(nn.Module):
         nn.init.zeros_(self.output_projection.weight)
 
     def forward(self, input):
-        x = input
-        x = self.input_projection(x.transpose(0, 1))
+        x = self.input_projection(input.transpose(1, 2))
         x = F.relu(x)
 
         skip = None
@@ -86,4 +85,4 @@ class Wave(nn.Module):
         x = self.skip_projection(x)
         x = F.relu(x)
         x = self.output_projection(x)
-        return x
+        return x.transpose(1, 2).contiguous()

@@ -16,6 +16,7 @@ NETWORKS_TYPES_TO_METHODS = {NetworkType.DNN: DNNDetector(),
                              NetworkType.Transformer: TransformerModel(),
                              NetworkType.WAVE: Wave(ModelConfig)}
 
+
 def initialize_networks(model_type):
     nets = [NETWORKS_TYPES_TO_METHODS[model_type] for _ in range(len(SINR_values))]
     return nets
