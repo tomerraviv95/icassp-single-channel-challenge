@@ -55,8 +55,9 @@ class ResidualBlock(nn.Module):
 
 
 class Wave(nn.Module):
-    def __init__(self, cfg: ModelConfig):
+    def __init__(self):
         super().__init__()
+        cfg = ModelConfig
         self.cfg = cfg
         self.input_projection = Conv1d(
             cfg.input_channels, cfg.residual_channels, 1)

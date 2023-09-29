@@ -1,22 +1,11 @@
 from enum import Enum
 
-from data_generation.dataset import SINR_values
-from models.dnn import DNNDetector
-from models.transformer import TransformerModel
-from models.wavenet import Wave, ModelConfig
+from models.model_free_class import ModelFreeWrapper
 
 
-class NetworkType(Enum):
-    DNN = 'DNN'
-    WAVE = 'WAVE'
-    Transformer = 'Transformer'
+class WrapperType(Enum):
+    ModelFree = 'ModelFree'
+    ModelBased = 'ModelBased'
 
 
-NETWORKS_TYPES_TO_METHODS = {NetworkType.DNN: DNNDetector(),
-                             NetworkType.Transformer: TransformerModel(),
-                             NetworkType.WAVE: Wave(ModelConfig)}
-
-
-def initialize_networks(model_type):
-    nets = [NETWORKS_TYPES_TO_METHODS[model_type] for _ in range(len(SINR_values))]
-    return nets
+TYPES_TO_WRAPPER = {WrapperType.ModelFree: ModelFreeWrapper}
