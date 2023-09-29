@@ -3,7 +3,8 @@ import tensorflow as tf
 
 from data_generation import SIGNAL_LENGTH
 from data_generation.interference import load_interference
-from data_generation.signal import get_soi_generation_fn
+from data_generation.signal_utils import get_soi_generation_fn
+import matplotlib.pyplot as plt
 
 FRAMES_NUM = 100
 SINR_values = np.arange(-30, 0.1, 3)
@@ -54,3 +55,19 @@ def generate_datasets(soi_type, interference_sig_type, interference_ind):
 
     meta_data = np.concatenate(meta_data, axis=1).T
     return x_gt, y_data, bits_gt, meta_data
+
+
+if __name__ == "__main__":
+    SOI_TYPE, INTERFERENCE_TYPE = 'QPSK', 'CommSignal2'
+    x_gt, y_data, bits_gt, meta_data = generate_datasets(SOI_TYPE, INTERFERENCE_TYPE, interference_ind=1)
+    signal_target = x_gt[-2]
+    bits = bits_gt[-2]
+    print(bits[:16])
+    real_signal_part = np.real(signal_target)
+    print(real_signal_part[:60])
+    img_signal_part = np.imag(signal_target)
+    print(img_signal_part[:60])
+    fig, axs = plt.subplots(1, 2)
+    axs[0].plot(real_signal_part[:60])
+    axs[1].plot(img_signal_part[:60])
+    plt.show()

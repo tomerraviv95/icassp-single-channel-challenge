@@ -21,7 +21,7 @@ np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
 if __name__ == "__main__":
-    model_type = NetworkType.WAVE
+    model_type = NetworkType.DNN
     train_indices, test_indices = train_test_split(np.array(range(TOTAL_INTERFERENCE_FRAMES)), test_size=TEST_RATIO)
     train_x_gt, train_y_data, train_bits_gt, train_meta_data = generate_datasets(SOI_TYPE, INTERFERENCE_TYPE,
                                                                                  interference_ind=train_indices)
