@@ -6,9 +6,7 @@ from sklearn.model_selection import train_test_split
 
 from data_generation.dataset import generate_datasets, SINR_values
 from globals import DEVICE
-from models import WrapperType, TYPES_TO_WRAPPER
-from models.model_free import NetworkType, NETWORKS_TYPES_TO_METHODS
-from utils.eval import eval_mse
+from models import WrapperType, TYPES_TO_WRAPPER, NetworkType, NETWORKS_TYPES_TO_METHODS
 
 SOI_TYPE, INTERFERENCE_TYPE = 'QPSK', 'CommSignal2'
 
@@ -21,8 +19,8 @@ np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
 if __name__ == "__main__":
-    model_wrapper = WrapperType.ModelFree
-    model_type = NetworkType.DNN
+    model_wrapper = WrapperType.ModelBased
+    model_type = NetworkType.ViterbiNet
     model = NETWORKS_TYPES_TO_METHODS[model_type]
     wrapper = TYPES_TO_WRAPPER[model_wrapper](model, len(SINR_values))
     train_indices, test_indices = train_test_split(np.array(range(TOTAL_INTERFERENCE_FRAMES)), test_size=TEST_RATIO)
@@ -32,20 +30,18 @@ if __name__ == "__main__":
                                                                              interference_ind=test_indices)
     print(f"GT shape:{train_x_gt.shape}")
     print(f"Noisy Data shape:{train_y_data.shape}")
-    train_bits_gt, test_bits_gt = torch.tensor(train_bits_gt, dtype=torch.cfloat).to(DEVICE), \
-                                  torch.tensor(test_bits_gt, dtype=torch.cfloat).to(DEVICE)
+    train_bits_gt, test_bits_gt = torch.tensor(train_bits_gt).to(DEVICE), torch.tensor(test_bits_gt).to(DEVICE)
     train_x_gt, test_x_gt = torch.tensor(train_x_gt, dtype=torch.cfloat).to(DEVICE), \
                             torch.tensor(test_x_gt, dtype=torch.cfloat).to(DEVICE)
     train_y_data, test_y_data = torch.tensor(train_y_data, dtype=torch.cfloat).to(DEVICE), \
                                 torch.tensor(test_y_data, dtype=torch.cfloat).to(DEVICE)
     wrapper.train_networks(train_x_gt, train_y_data, train_bits_gt, train_meta_data)
-    for sinr, net in zip(SINR_values[-1:], wrapper.nets[-1:]):
+    indices = [-1]
+    for net_ind in indices:
+        sinr = SINR_values[net_ind]
         print(sinr)
         cur_sinr_indices = test_meta_data[:, 1].astype(float) == sinr
         cur_test_x_gt = test_x_gt[cur_sinr_indices]
         cur_test_y_data = test_y_data[cur_sinr_indices]
-        cur_real_test_y_data = torch.view_as_real(test_y_data[cur_sinr_indices])
-        pred_x_gt = torch.view_as_complex(net(cur_real_test_y_data).reshape(cur_real_test_y_data.shape))
-        mse = eval_mse(cur_test_x_gt.detach().numpy(), cur_test_y_data.detach().numpy())
-        mse_after_training = eval_mse(cur_test_x_gt.detach().numpy(), pred_x_gt.detach().numpy())
-        print(f'Initial MSE: {mse.mean()}[dB] -> After training: {mse_after_training.mean()}[dB]')
+        cur_test_bits_gt = test_bits_gt[cur_sinr_indices]
+        wrapper.inference(net_ind, cur_test_x_gt, cur_test_y_data, cur_test_bits_gt)
