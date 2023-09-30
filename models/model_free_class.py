@@ -41,17 +41,16 @@ class ModelFreeWrapper:
 
     def train_networks(self, x_gt, y_data, bits_gt, meta_data):
         self.init_loss()
-        indices = [-1]
+        indices = range(len(SINR_values))
         for net_ind in indices:
             sinr = SINR_values[net_ind]
             print(f"Training for SINR {sinr}")
             old_model = self.nets[net_ind]
             self.init_optimizer(old_model)
             current_ind = meta_data[:, 1].astype(float) == sinr
-            real_bits_gt = torch.view_as_real(bits_gt[current_ind])
             real_x_gt = torch.view_as_real(x_gt[current_ind])
             real_y_data = torch.view_as_real(y_data[current_ind])
-            new_model = self.train_single_network(old_model, real_bits_gt, real_x_gt, real_y_data)
+            new_model = self.train_single_network(old_model, bits_gt, real_x_gt, real_y_data)
             self.nets[net_ind] = new_model
 
     def init_loss(self):

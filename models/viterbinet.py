@@ -5,7 +5,7 @@ import torch.nn as nn
 
 from globals import DEVICE
 
-HIDDEN_SIZE = 75
+HIDDEN_SIZE = 200
 
 
 # def create_transition_table(n_states: int) -> np.ndarray:

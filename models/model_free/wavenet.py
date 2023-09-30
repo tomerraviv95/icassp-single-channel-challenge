@@ -9,8 +9,8 @@ import torch.nn.functional as F
 @dataclass
 class ModelConfig:
     input_channels: int = 2
-    residual_layers: int = 12
-    residual_channels: int = 64
+    residual_layers: int = 6
+    residual_channels: int = 32
     dilation_cycle_length: int = 6
 
 
