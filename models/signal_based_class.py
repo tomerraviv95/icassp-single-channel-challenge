@@ -10,7 +10,7 @@ from globals import DEVICE, BATCH_SIZE, LR, EPOCHS
 from utils.eval import eval_mse
 
 
-class ModelFreeWrapper:
+class SignalBasedWrapper:
     def __init__(self, model, models_num):
         self.nets = [model() for _ in range(models_num)]
 

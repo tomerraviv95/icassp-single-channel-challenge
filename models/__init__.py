@@ -1,12 +1,12 @@
 from enum import Enum
 
-from models.model_based.lstm import SignalAwareLSTM
-from models.model_based.signalawarednn import SignalAwareDNN
-from models.model_based_class import ModelBasedWrapper
-from models.model_free.dnn import DNNDetector
-from models.model_free.transformer import TransformerModel
-from models.model_free.wavenet import Wave
-from models.model_free_class import ModelFreeWrapper
+from models.bit_based.lstm import SignalAwareLSTM
+from models.bit_based.signalawarednn import SignalAwareDNN
+from models.bit_based_class import BitBasedWrapper
+from models.signal_based.dnn import DNNDetector
+from models.signal_based.transformer import TransformerModel
+from models.signal_based.wavenet import Wave
+from models.signal_based_class import SignalBasedWrapper
 
 
 class NetworkType(Enum):
@@ -29,5 +29,5 @@ class WrapperType(Enum):
     ModelBased = 'ModelBased'
 
 
-TYPES_TO_WRAPPER = {WrapperType.ModelFree: ModelFreeWrapper,
-                    WrapperType.ModelBased: ModelBasedWrapper}
+TYPES_TO_WRAPPER = {WrapperType.ModelFree: SignalBasedWrapper,
+                    WrapperType.ModelBased: BitBasedWrapper}

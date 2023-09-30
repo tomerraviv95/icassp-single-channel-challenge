@@ -19,7 +19,7 @@ def calculate_states(length: int, tx: torch.Tensor) -> torch.Tensor:
     return gt_states
 
 
-class ModelBasedWrapper:
+class BitBasedWrapper:
     def __init__(self, model, models_num):
         self.nets = [model(4, 32) for _ in range(models_num)]
 
