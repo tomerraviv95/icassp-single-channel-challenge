@@ -28,17 +28,19 @@ np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
 if __name__ == "__main__":
-    model_wrapper = WrapperType.ModelFree
-    model_type = NetworkType.WAVE
+    model_wrapper = WrapperType.ModelBased
+    model_type = NetworkType.SignalAwareLSTM
     interference = INTERFERENCE_TYPE.CommSignal3.name
     ######################
     model = NETWORKS_TYPES_TO_METHODS[model_type]
     wrapper = TYPES_TO_WRAPPER[model_wrapper](model, len(SINR_values))
     train_indices, test_indices = train_test_split(np.array(range(TOTAL_INTERFERENCE_FRAMES)), test_size=TEST_RATIO)
-    train_x_gt, train_y_data, train_bits_gt, train_meta_data = generate_datasets(SOI_TYPE, interference,
-                                                                                 interference_ind=train_indices)
-    test_x_gt, test_y_data, test_bits_gt, test_meta_data = generate_datasets(SOI_TYPE, interference,
-                                                                             interference_ind=train_indices)
+    train_x_gt, train_y_data, train_bits_gt, train_meta_data, train_sig_interferences = generate_datasets(SOI_TYPE,
+                                                                                                          interference,
+                                                                                                          interference_ind=train_indices)
+    test_x_gt, test_y_data, test_bits_gt, test_meta_data, test_sig_interferences = generate_datasets(SOI_TYPE,
+                                                                                                     interference,
+                                                                                                     interference_ind=test_indices)
     print(f"GT shape:{train_x_gt.shape}")
     print(f"Noisy Data shape:{train_y_data.shape}")
     train_bits_gt, test_bits_gt = torch.tensor(train_bits_gt).to(DEVICE), torch.tensor(test_bits_gt).to(DEVICE)
@@ -47,7 +49,7 @@ if __name__ == "__main__":
     train_y_data, test_y_data = torch.tensor(train_y_data, dtype=torch.cfloat).to(DEVICE), \
                                 torch.tensor(test_y_data, dtype=torch.cfloat).to(DEVICE)
     wrapper.train_networks(train_x_gt, train_y_data, train_bits_gt, train_meta_data)
-    indices = range(len(SINR_values))
+    indices = [-1]  # range(len(SINR_values))
     for net_ind in indices:
         sinr = SINR_values[net_ind]
         print(sinr)
