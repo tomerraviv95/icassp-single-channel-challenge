@@ -4,8 +4,8 @@ import torch
 from torch import device
 
 LR = 1e-3
-EPOCHS = 100
-BATCH_SIZE = 4
+EPOCHS = 250
+BATCH_SIZE = 6
 
 DEVICE: device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 

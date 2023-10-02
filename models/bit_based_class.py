@@ -69,14 +69,18 @@ class BitBasedWrapper:
     def init_optimizer(self, old_model):
         self.optimizer = Adam(filter(lambda p: p.requires_grad, old_model.parameters()), lr=LR)
 
-    def inference(self, net_ind, cur_test_x_gt, cur_test_y_data, cur_test_bits_gt):
+    def forward(self, net_ind, cur_test_y_data):
         cur_real_test_y_data = torch.view_as_real(cur_test_y_data)
-        pred_bits_gt = self.nets[net_ind](cur_real_test_y_data).reshape(cur_test_bits_gt.shape)
+        pred_bits_gt = self.nets[net_ind](cur_real_test_y_data).reshape(cur_test_y_data.shape)
+        tf_bits = tf.constant(pred_bits_gt.detach().numpy(), dtype=tf.float32)
+        pred_x_gt = modulate_qpsk_signal(tf_bits, ebno_db=None)[0]
+        return pred_x_gt, pred_bits_gt
+
+    def inference(self, net_ind, cur_test_x_gt, cur_test_y_data, cur_test_bits_gt):
+        pred_x_gt, pred_bits_gt = self.forward(net_ind, cur_test_y_data)
         ber = eval_ber(pred_bits_gt.detach().numpy(), cur_test_bits_gt.detach().numpy())
         avg_log_ber = np.log10(np.mean(ber))
         print(f'log10(BER): {avg_log_ber}[dB]')
-        tf_bits = tf.constant(pred_bits_gt.detach().numpy(), dtype=tf.float32)
-        pred_x_gt = modulate_qpsk_signal(tf_bits, ebno_db=None)[0]
         mse = eval_mse(cur_test_x_gt.detach().numpy(), cur_test_y_data.detach().numpy())
         mse_after_training = eval_mse(cur_test_x_gt.detach().numpy(), pred_x_gt.numpy())
         print(f'Initial MSE: {mse}[dB] -> After training: {mse_after_training}[dB]')

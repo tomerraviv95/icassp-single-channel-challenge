@@ -59,9 +59,13 @@ class SignalBasedWrapper:
     def init_optimizer(self, old_model):
         self.optimizer = Adam(filter(lambda p: p.requires_grad, old_model.parameters()), lr=LR)
 
-    def inference(self, net_ind, cur_test_x_gt, cur_test_y_data, cur_test_bits_gt):
+    def forward(self, net_ind, cur_test_y_data):
         cur_real_test_y_data = torch.view_as_real(cur_test_y_data)
         pred_x_gt = torch.view_as_complex(self.nets[net_ind](cur_real_test_y_data).reshape(cur_real_test_y_data.shape))
+        return pred_x_gt
+
+    def inference(self, net_ind, cur_test_x_gt, cur_test_y_data, cur_test_bits_gt):
+        pred_x_gt = self.forward(net_ind, cur_test_y_data)
         mse = eval_mse(cur_test_x_gt.detach().numpy(), cur_test_y_data.detach().numpy())
         mse_after_training = eval_mse(cur_test_x_gt.detach().numpy(), pred_x_gt.detach().numpy())
         print(f'Initial MSE: {mse}[dB] -> After training: {mse_after_training}[dB]')
