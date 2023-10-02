@@ -54,7 +54,7 @@ class MixedWrapper:
 
     def train_networks(self, x_gt, y_data, bits_gt, meta_data):
         self.init_loss()
-        indices = [-1]  # range(len(SINR_values))
+        indices = range(len(SINR_values))
         for net_ind in indices:
             sinr = SINR_values[net_ind]
             print(f"Training for SINR {sinr}")

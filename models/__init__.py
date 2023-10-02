@@ -1,9 +1,9 @@
 from enum import Enum
 
-from models.bit_based.lstm import SignalAwareLSTM
+from models.bit_based.signalawarelstm import SignalAwareLSTM
 from models.bit_based.signalawarednn import SignalAwareDNN
 from models.bit_based_class import BitBasedWrapper
-from models.mixed.base_model import AwareLSTM
+from models.mixed.base_model import MixedLSTM
 from models.mixed_class import MixedWrapper
 from models.signal_based.dnn import DNNDetector
 from models.signal_based.transformer import TransformerModel
@@ -16,8 +16,8 @@ class NetworkType(Enum):
     Transformer = 'Transformer'
     WAVE = 'WAVE'
     SignalAwareDNN = 'SignalAwareDNN'
-    SignalAwareLSTM = 'AwareLSTM'
-    AwareLSTM = 'AwareLSTM'
+    SignalAwareLSTM = 'SignalAwareLSTM'
+    MixedLSTM = 'MixedLSTM'
 
 
 NETWORKS_TYPES_TO_METHODS = {NetworkType.DNN: DNNDetector,
@@ -25,7 +25,7 @@ NETWORKS_TYPES_TO_METHODS = {NetworkType.DNN: DNNDetector,
                              NetworkType.WAVE: Wave,
                              NetworkType.SignalAwareDNN: SignalAwareDNN,
                              NetworkType.SignalAwareLSTM: SignalAwareLSTM,
-                             NetworkType.AwareLSTM: AwareLSTM}
+                             NetworkType.MixedLSTM: MixedLSTM}
 
 
 class WrapperType(Enum):

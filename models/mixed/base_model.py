@@ -17,13 +17,13 @@ def binary(x, bits):
 WINDOW_SIZE = 8
 
 
-class AwareLSTM(nn.Module):
+class MixedLSTM(nn.Module):
     """
     This implements the VA decoder by a parameterization of the cost calculation by an NN for each stage
     """
 
     def __init__(self, n_states: int, freq_spacing: int):
-        super(AwareLSTM, self).__init__()
+        super(MixedLSTM, self).__init__()
         self.n_states = n_states
         self.freq_spacing = freq_spacing
         self._initialize_dnn()

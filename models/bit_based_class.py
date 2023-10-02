@@ -51,7 +51,7 @@ class BitBasedWrapper:
 
     def train_networks(self, x_gt, y_data, bits_gt, meta_data):
         self.init_loss()
-        indices = [-1]  # range(len(SINR_values))
+        indices = range(len(SINR_values))
         for net_ind in indices:
             sinr = SINR_values[net_ind]
             print(f"Training for SINR {sinr}")
@@ -71,7 +71,7 @@ class BitBasedWrapper:
 
     def forward(self, net_ind, cur_test_y_data):
         cur_real_test_y_data = torch.view_as_real(cur_test_y_data)
-        pred_bits_gt = self.nets[net_ind](cur_real_test_y_data).reshape(cur_test_y_data.shape)
+        pred_bits_gt = self.nets[net_ind](cur_real_test_y_data).reshape(cur_test_y_data.shape[0], -1)
         tf_bits = tf.constant(pred_bits_gt.detach().numpy(), dtype=tf.float32)
         pred_x_gt = modulate_qpsk_signal(tf_bits, ebno_db=None)[0]
         return pred_x_gt, pred_bits_gt
