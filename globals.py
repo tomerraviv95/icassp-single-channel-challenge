@@ -3,7 +3,7 @@ import os
 import torch
 from torch import device
 
-LR = 1e-3
+LR = 5e-3
 EPOCHS = 100
 BATCH_SIZE = 4
 

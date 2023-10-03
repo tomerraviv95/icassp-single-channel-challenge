@@ -37,6 +37,7 @@ if __name__ == "__main__":
                          INTERFERENCE_TYPE.CommSignal2.name,
                          INTERFERENCE_TYPE.CommSignal5G1.name,
                          INTERFERENCE_TYPE.EMISignal1.name]:
+        print(interference)
         model = NETWORKS_TYPES_TO_METHODS[model_type]
         wrapper = TYPES_TO_WRAPPER[model_wrapper](model, len(SINR_values))
         train_indices = np.array(range(TOTAL_INTERFERENCE_FRAMES))

@@ -27,6 +27,9 @@ torch.cuda.manual_seed(SEED)
 np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
+
+
+
 if __name__ == "__main__":
     model_wrapper = WrapperType.Mixed
     model_type = NetworkType.MixedLSTM
@@ -49,13 +52,5 @@ if __name__ == "__main__":
     train_y_data, test_y_data = torch.tensor(train_y_data, dtype=torch.cfloat).to(DEVICE), \
                                 torch.tensor(test_y_data, dtype=torch.cfloat).to(DEVICE)
     wrapper.train_networks(train_x_gt, train_y_data, train_bits_gt, train_meta_data)
-    indices = [-1]  # range(len(SINR_values))
-    for net_ind in indices:
-        sinr = SINR_values[net_ind]
-        print(sinr)
-        cur_sinr_indices = test_meta_data[:, 1].astype(float) == sinr
-        cur_test_x_gt = test_x_gt[cur_sinr_indices]
-        cur_test_y_data = test_y_data[cur_sinr_indices]
-        cur_test_bits_gt = test_bits_gt[cur_sinr_indices]
-        wrapper.inference(net_ind, cur_test_x_gt, cur_test_y_data, cur_test_bits_gt)
+    wrapper.evaluate(test_bits_gt, test_y_data, test_x_gt, test_meta_data)
 
