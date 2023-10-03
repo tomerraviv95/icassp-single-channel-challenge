@@ -31,8 +31,8 @@ np.random.seed(SEED)
 TOTAL_INTERFERENCE_FRAMES = 100
 
 if __name__ == "__main__":
-    model_wrapper = WrapperType.BitBased
-    model_type = NetworkType.SignalAwareLSTM
+    model_wrapper = WrapperType.Mixed
+    model_type = NetworkType.MixedLSTM
     for interference in [INTERFERENCE_TYPE.CommSignal3.name,
                          INTERFERENCE_TYPE.CommSignal2.name,
                          INTERFERENCE_TYPE.CommSignal5G1.name,

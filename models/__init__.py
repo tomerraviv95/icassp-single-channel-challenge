@@ -3,7 +3,7 @@ from enum import Enum
 from models.bit_based.signalawarelstm import SignalAwareLSTM
 from models.bit_based.signalawarednn import SignalAwareDNN
 from models.bit_based_class import BitBasedWrapper
-from models.mixed.base_model import MixedLSTM
+from models.mixed.mixed import MixedLSTM
 from models.mixed_class import MixedWrapper
 from models.signal_based.dnn import DNNDetector
 from models.signal_based.transformer import TransformerModel
